@@ -3388,6 +3388,11 @@ export interface Nursery {
 	 */
 	noVueDeprecatedListeners?: NoVueDeprecatedListenersConfiguration;
 	/**
+	 * Disallow the deprecated model option in Vue components.
+	 * See https://biomejs.dev/linter/rules/no-vue-deprecated-model-definition
+	 */
+	noVueDeprecatedModelDefinition?: NoVueDeprecatedModelDefinitionConfiguration;
+	/**
 	 * Disallow the tag prop on RouterLink.
 	 * See https://biomejs.dev/linter/rules/no-vue-deprecated-router-link-tag-prop
 	 */
@@ -6327,6 +6332,9 @@ export type NoVueDeprecatedDeleteSetConfiguration =
 export type NoVueDeprecatedListenersConfiguration =
 	| RulePlainConfiguration
 	| RuleWithNoVueDeprecatedListenersOptions;
+export type NoVueDeprecatedModelDefinitionConfiguration =
+	| RulePlainConfiguration
+	| RuleWithNoVueDeprecatedModelDefinitionOptions;
 export type NoVueDeprecatedRouterLinkTagPropConfiguration =
 	| RulePlainConfiguration
 	| RuleWithNoVueDeprecatedRouterLinkTagPropOptions;
@@ -9161,6 +9169,10 @@ export interface RuleWithNoVueDeprecatedListenersOptions {
 	level: RulePlainConfiguration;
 	options?: NoVueDeprecatedListenersOptions;
 }
+export interface RuleWithNoVueDeprecatedModelDefinitionOptions {
+	level: RulePlainConfiguration;
+	options?: NoVueDeprecatedModelDefinitionOptions;
+}
 export interface RuleWithNoVueDeprecatedRouterLinkTagPropOptions {
 	level: RulePlainConfiguration;
 	options?: NoVueDeprecatedRouterLinkTagPropOptions;
@@ -11865,6 +11877,7 @@ export type NoVueBooleanDefaultOptions = {};
 export type NoVueComputedPropertiesInDataOptions = {};
 export type NoVueDeprecatedDeleteSetOptions = {};
 export type NoVueDeprecatedListenersOptions = {};
+export type NoVueDeprecatedModelDefinitionOptions = {};
 export interface NoVueDeprecatedRouterLinkTagPropOptions {
 	/**
 	 * Names of the link components to check for the `tag` prop.
@@ -13694,6 +13707,7 @@ export type Category =
 	| "lint/nursery/noVueComputedPropertiesInData"
 	| "lint/nursery/noVueDeprecatedDeleteSet"
 	| "lint/nursery/noVueDeprecatedListeners"
+	| "lint/nursery/noVueDeprecatedModelDefinition"
 	| "lint/nursery/noVueDeprecatedRouterLinkTagProp"
 	| "lint/nursery/noVueDeprecatedScopeAttribute"
 	| "lint/nursery/noVueDeprecatedScopedSlots"
