@@ -3408,6 +3408,11 @@ export interface Nursery {
 	 */
 	noVueLifecycleAfterAwait?: NoVueLifecycleAfterAwaitConfiguration;
 	/**
+	 * Disallow more than one object in an array passed to :class.
+	 * See https://biomejs.dev/linter/rules/no-vue-multiple-objects-in-class
+	 */
+	noVueMultipleObjectsInClass?: NoVueMultipleObjectsInClassConfiguration;
+	/**
 	 * Disallow passing more than one argument to a Vue slot.
 	 * See https://biomejs.dev/linter/rules/no-vue-multiple-slot-args
 	 */
@@ -6319,6 +6324,9 @@ export type NoVueDeprecatedScopedSlotsConfiguration =
 export type NoVueLifecycleAfterAwaitConfiguration =
 	| RulePlainConfiguration
 	| RuleWithNoVueLifecycleAfterAwaitOptions;
+export type NoVueMultipleObjectsInClassConfiguration =
+	| RulePlainConfiguration
+	| RuleWithNoVueMultipleObjectsInClassOptions;
 export type NoVueMultipleSlotArgsConfiguration =
 	| RulePlainConfiguration
 	| RuleWithNoVueMultipleSlotArgsOptions;
@@ -9149,6 +9157,10 @@ export interface RuleWithNoVueLifecycleAfterAwaitOptions {
 	level: RulePlainConfiguration;
 	options?: NoVueLifecycleAfterAwaitOptions;
 }
+export interface RuleWithNoVueMultipleObjectsInClassOptions {
+	level: RulePlainConfiguration;
+	options?: NoVueMultipleObjectsInClassOptions;
+}
 export interface RuleWithNoVueMultipleSlotArgsOptions {
 	level: RulePlainConfiguration;
 	options?: NoVueMultipleSlotArgsOptions;
@@ -11822,6 +11834,7 @@ export interface NoVueDeprecatedRouterLinkTagPropOptions {
 export type NoVueDeprecatedScopeAttributeOptions = {};
 export type NoVueDeprecatedScopedSlotsOptions = {};
 export type NoVueLifecycleAfterAwaitOptions = {};
+export type NoVueMultipleObjectsInClassOptions = {};
 export type NoVueMultipleSlotArgsOptions = {};
 export type NoVueMutatingPropsOptions = {};
 export type NoVueRequiredPropWithDefaultOptions = {};
@@ -13636,6 +13649,7 @@ export type Category =
 	| "lint/nursery/noVueDeprecatedScopeAttribute"
 	| "lint/nursery/noVueDeprecatedScopedSlots"
 	| "lint/nursery/noVueLifecycleAfterAwait"
+	| "lint/nursery/noVueMultipleObjectsInClass"
 	| "lint/nursery/noVueMultipleSlotArgs"
 	| "lint/nursery/noVueMutatingProps"
 	| "lint/nursery/noVueRootVIf"
