@@ -1,0 +1,210 @@
+---
+source: crates/biome_js_analyze/tests/spec_tests.rs
+expression: overloads.js
+---
+# Input
+```js
+/* should generate diagnostics */
+
+test.describe(async () => {});
+test.describe.only((done) => {});
+test.describe.serial(function(done) {});
+
+test.describe('suite', { tag: '@smoke' }, async () => {});
+test.describe.only('suite', {}, async function() {});
+test.describe.parallel('suite', {}, (done) => {});
+test.describe.serial.only('suite', {}, function(done) {});
+test.describe.skip('suite', {}, null);
+test.describe.fixme('suite', {}, ...callbacks);
+
+test.describe();
+
+```
+
+# Diagnostics
+```
+overloads.js:3:1 lint/correctness/usePlaywrightValidDescribeCallback ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  × Describe callback should not be async.
+  
+    1 │ /* should generate diagnostics */
+    2 │ 
+  > 3 │ test.describe(async () => {});
+      │ ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    4 │ test.describe.only((done) => {});
+    5 │ test.describe.serial(function(done) {});
+  
+  i Describe blocks are meant to organize tests, not contain asynchronous logic. Async operations should be placed within individual test callbacks.
+  
+  i Remove the async keyword from the describe callback.
+  
+
+```
+
+```
+overloads.js:4:1 lint/correctness/usePlaywrightValidDescribeCallback ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  × Describe callback should not have parameters.
+  
+    3 │ test.describe(async () => {});
+  > 4 │ test.describe.only((done) => {});
+      │ ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    5 │ test.describe.serial(function(done) {});
+    6 │ 
+  
+  i Describe callbacks are invoked without arguments by the test framework.
+  
+  i Remove parameters from the describe callback.
+  
+
+```
+
+```
+overloads.js:5:1 lint/correctness/usePlaywrightValidDescribeCallback ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  × Describe callback should not have parameters.
+  
+    3 │ test.describe(async () => {});
+    4 │ test.describe.only((done) => {});
+  > 5 │ test.describe.serial(function(done) {});
+      │ ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    6 │ 
+    7 │ test.describe('suite', { tag: '@smoke' }, async () => {});
+  
+  i Describe callbacks are invoked without arguments by the test framework.
+  
+  i Remove parameters from the describe callback.
+  
+
+```
+
+```
+overloads.js:7:1 lint/correctness/usePlaywrightValidDescribeCallback ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  × Describe callback should not be async.
+  
+    5 │ test.describe.serial(function(done) {});
+    6 │ 
+  > 7 │ test.describe('suite', { tag: '@smoke' }, async () => {});
+      │ ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    8 │ test.describe.only('suite', {}, async function() {});
+    9 │ test.describe.parallel('suite', {}, (done) => {});
+  
+  i Describe blocks are meant to organize tests, not contain asynchronous logic. Async operations should be placed within individual test callbacks.
+  
+  i Remove the async keyword from the describe callback.
+  
+
+```
+
+```
+overloads.js:8:1 lint/correctness/usePlaywrightValidDescribeCallback ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  × Describe callback should not be async.
+  
+     7 │ test.describe('suite', { tag: '@smoke' }, async () => {});
+   > 8 │ test.describe.only('suite', {}, async function() {});
+       │ ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+     9 │ test.describe.parallel('suite', {}, (done) => {});
+    10 │ test.describe.serial.only('suite', {}, function(done) {});
+  
+  i Describe blocks are meant to organize tests, not contain asynchronous logic. Async operations should be placed within individual test callbacks.
+  
+  i Remove the async keyword from the describe callback.
+  
+
+```
+
+```
+overloads.js:9:1 lint/correctness/usePlaywrightValidDescribeCallback ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  × Describe callback should not have parameters.
+  
+     7 │ test.describe('suite', { tag: '@smoke' }, async () => {});
+     8 │ test.describe.only('suite', {}, async function() {});
+   > 9 │ test.describe.parallel('suite', {}, (done) => {});
+       │ ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    10 │ test.describe.serial.only('suite', {}, function(done) {});
+    11 │ test.describe.skip('suite', {}, null);
+  
+  i Describe callbacks are invoked without arguments by the test framework.
+  
+  i Remove parameters from the describe callback.
+  
+
+```
+
+```
+overloads.js:10:1 lint/correctness/usePlaywrightValidDescribeCallback ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  × Describe callback should not have parameters.
+  
+     8 │ test.describe.only('suite', {}, async function() {});
+     9 │ test.describe.parallel('suite', {}, (done) => {});
+  > 10 │ test.describe.serial.only('suite', {}, function(done) {});
+       │ ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    11 │ test.describe.skip('suite', {}, null);
+    12 │ test.describe.fixme('suite', {}, ...callbacks);
+  
+  i Describe callbacks are invoked without arguments by the test framework.
+  
+  i Remove parameters from the describe callback.
+  
+
+```
+
+```
+overloads.js:11:1 lint/correctness/usePlaywrightValidDescribeCallback ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  × Describe callback must be a function.
+  
+     9 │ test.describe.parallel('suite', {}, (done) => {});
+    10 │ test.describe.serial.only('suite', {}, function(done) {});
+  > 11 │ test.describe.skip('suite', {}, null);
+       │ ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    12 │ test.describe.fixme('suite', {}, ...callbacks);
+    13 │ 
+  
+  i The callback argument must be a function, not a string, number, object, or other type.
+  
+  i Replace the callback with a function expression or arrow function.
+  
+
+```
+
+```
+overloads.js:12:1 lint/correctness/usePlaywrightValidDescribeCallback ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  × Describe callback must be a function.
+  
+    10 │ test.describe.serial.only('suite', {}, function(done) {});
+    11 │ test.describe.skip('suite', {}, null);
+  > 12 │ test.describe.fixme('suite', {}, ...callbacks);
+       │ ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    13 │ 
+    14 │ test.describe();
+  
+  i The callback argument must be a function, not a string, number, object, or other type.
+  
+  i Replace the callback with a function expression or arrow function.
+  
+
+```
+
+```
+overloads.js:14:1 lint/correctness/usePlaywrightValidDescribeCallback ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  × Describe requires a callback function.
+  
+    12 │ test.describe.fixme('suite', {}, ...callbacks);
+    13 │ 
+  > 14 │ test.describe();
+       │ ^^^^^^^^^^^^^^^
+    15 │ 
+  
+  i Describe blocks require a callback function that contains the test definitions.
+  
+  i Add a callback function as the last argument to describe.
+  
+
+```

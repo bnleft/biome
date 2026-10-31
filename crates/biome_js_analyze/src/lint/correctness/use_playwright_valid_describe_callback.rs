@@ -3,7 +3,7 @@ use biome_analyze::{
     Ast, Rule, RuleDiagnostic, RuleDomain, RuleSource, context::RuleContext, declare_lint_rule,
 };
 use biome_console::markup;
-use biome_js_syntax::{AnyJsExpression, JsCallExpression};
+use biome_js_syntax::{AnyJsExpression, AnyJsLiteralExpression, JsCallExpression};
 use biome_rowan::{AstNode, AstSeparatedList};
 use biome_rule_options::use_playwright_valid_describe_callback::UsePlaywrightValidDescribeCallbackOptions;
 
@@ -46,6 +46,11 @@ declare_lint_rule! {
     /// });
     /// ```
     ///
+    /// ```js
+    /// test.describe(() => {});
+    /// test.describe('suite', { tag: '@smoke' }, () => {});
+    /// ```
+    ///
     pub UsePlaywrightValidDescribeCallback {
         version: "2.4.2",
         name: "usePlaywrightValidDescribeCallback",
@@ -72,18 +77,27 @@ impl Rule for UsePlaywrightValidDescribeCallback {
             return None;
         }
 
-        // Get the callback argument (should be the second argument for describe calls)
-        let args = call_expr.arguments().ok()?;
-        let [_, callback_arg] = args.get_arguments_by_index([0, 1]);
+        let args = call_expr.arguments().ok()?.args();
 
-        // Check if callback is missing
-        let Some(callback_arg) = callback_arg else {
+        let Some(callback_arg) = args.last() else {
             return Some(InvalidReason::MissingCallback);
         };
+        let callback_arg = callback_arg.ok()?;
 
         let Some(callback_expr) = callback_arg.as_any_js_expression() else {
             return Some(InvalidReason::NotFunction);
         };
+
+        if args.len() == 1
+            && matches!(
+                callback_expr,
+                AnyJsExpression::AnyJsLiteralExpression(
+                    AnyJsLiteralExpression::JsStringLiteralExpression(_)
+                )
+            )
+        {
+            return Some(InvalidReason::MissingCallback);
+        }
 
         // Check if it's a function
         match callback_expr {
@@ -141,12 +155,12 @@ impl Rule for UsePlaywrightValidDescribeCallback {
             ),
             InvalidReason::MissingCallback => (
                 markup! { "Describe requires a callback function." },
-                markup! { "The second argument to describe must be a function that contains the test definitions." },
-                markup! { "Add a callback function as the second argument to describe." },
+                markup! { "Describe blocks require a callback function that contains the test definitions." },
+                markup! { "Add a callback function as the last argument to describe." },
             ),
             InvalidReason::NotFunction => (
                 markup! { "Describe callback must be a function." },
-                markup! { "The second argument to describe must be a function, not a "<Emphasis>"string"</Emphasis>", "<Emphasis>"number"</Emphasis>", "<Emphasis>"object"</Emphasis>", or other type." },
+                markup! { "The callback argument must be a function, not a "<Emphasis>"string"</Emphasis>", "<Emphasis>"number"</Emphasis>", "<Emphasis>"object"</Emphasis>", or other type." },
                 markup! { "Replace the callback with a function expression or arrow function." },
             ),
         };
